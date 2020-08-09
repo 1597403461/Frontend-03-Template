@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    * {
+        box-sizing: border-box;
+    }
+</style>
+<style>
+    /* 圣杯布局 */
+    .container {
+        padding: 0 200px;
+        width: 100%;
+        overflow: hidden;
+    }
+    .container div{
+        float: left;
+        height: 300px;
+    }
+    .container .middle {
+        width: 100%;
+        background-color: red;
+    }
+    .container .left {
+        background-color: yellow;
+        margin-left: -100%;
+        position: relative;
+        left: -200px;
+        width: 200px;
+    }
+    .container .right {
+        background-color: yellow;
+        margin-left: -200px;
+        position: relative;
+        right: -200px;
+        width: 200px;
+    }
+</style>
+
+<style>
+    /* 双飞翼布局 */
+    .container-1 {
+        overflow: hidden;
+        width: 100%;
+    }
+    .container-1 div{
+        float: left;
+        height: 300px;
+    }
+    .container-1 .middle {
+        width: 100%;
+        padding: 0 200px;
+        background-color: red;
+    }
+    .container-1 .left {
+        background-color: yellow;
+        margin-left: -100%;
+        width: 200px;
+    }
+    .container-1 .right {
+        background-color: yellow;
+        margin-left: -200px;
+        width: 200px;
+    }
+</style>
+
+<style>
+    /* flex布局 */
+    .container-flex {
+        overflow: hidden;
+        width: 100%;
+        display: flex;
+    }
+    .container-flex div{
+        height: 300px;
+    }
+    .container-flex .middle {
+        flex: 1;
+        width: 100%;
+        background-color: red;
+    }
+    .container-flex .left {
+        flex-basis: 200px;
+        background-color: yellow;
+    }
+    .container-flex .right {
+        flex-basis: 200px;
+        background-color: yellow;
+    }
+</style>
+<body>
+    <div class="container">
+        <div class="middle">圣杯布局</div>
+        <div class="left"></div>
+        <div class="right"></div>
+    </div>
+    <br/>
+    <div class="container-1">
+        <div class="middle">双飞燕布局</div>
+        <div class="left"></div>
+        <div class="right"></div>
+    </div>
+    <br>
+    <div class="container-flex">
+        <div class="left"></div>
+        <div class="middle">flex</div>
+        <div class="right"></div>
+    </div>
+</body>
+</html>
