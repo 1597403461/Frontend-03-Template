@@ -11,7 +11,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/week03/client/index.js"
+            "program": "${workspaceFolder}/week03/HTMLParse/client/index.js"
         }
     ]
 }

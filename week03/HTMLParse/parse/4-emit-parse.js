@@ -1,3 +1,4 @@
+// 新加代码部分为所有emit部分
 const EOF = Symbol("EOF");
 let currentToken = null;
 

@@ -232,9 +232,6 @@ void async function () {
     }
     let request = new Request(options);
     let response = await request.send();
-
-    console.log(response, '-----');
-
     let dom = parser.parserHTML(response.body);
-
+    console.dir(dom);
 }()

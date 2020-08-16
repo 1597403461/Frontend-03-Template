@@ -3,9 +3,44 @@ let currentToken = null;
 let currentAttribute = null;
 let words = /^[a-zA-Z]$/;
 let spaceCharReg = /^[\t\n\f ]$/;
+let currentTextNode = null;
+
+let stack = [{ type: 'document', children: [] }];
 
 function emit(token) {
-    console.log(token);
+    // console.log('emit:', JSON.stringify(token));
+    let top = stack[stack.length - 1];
+    if (token.type === 'startTag') {
+        let element = { type: 'element', tagName: token.tagName, children: [], attributes: [] };
+        for (let p in token) {
+            if (p !== 'type' && p !== 'tagName') {
+                element.attributes.push({ name: p, value: token[p] });
+            }
+        }
+        top.children.push(element);
+        element.parent = top;
+
+        if (!token.isSelfClosing) {
+            stack.push(element);
+        } // 此处不是特别懂（why？入栈）
+        currentTextNode = null;
+    }
+    else if (token.type === 'endTag') {
+        if (top.tagName !== token.tagName) {
+            throw new Error('Tag start end doesn\'t match!');
+        }
+        else {
+            stack.pop();
+        }
+        currentTextNode = null;
+    }
+    else if (token.type === 'text') {
+        if (currentTextNode == null) {
+            currentTextNode = { type: 'text', content: '' };
+            top.children.push(currentTextNode);
+        }
+        currentTextNode.content += token.content;
+    }
 }
 
 function data(c) {
@@ -27,7 +62,7 @@ function tagOpen(c) {
         return endTagOpen;
     } else if (c.match(words)) {
         currentToken = {
-            type: 'tartTag',
+            type: 'startTag',
             tagName: ''
         }
         return tagName(c)
@@ -224,4 +259,5 @@ module.exports.parserHTML = function parserHTML(html) {
         state = state(c);
     }
     state = state(EOF);
+    return stack[0];
 }
