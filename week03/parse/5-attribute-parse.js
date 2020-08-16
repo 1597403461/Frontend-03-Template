@@ -1,23 +1,22 @@
 const EOF = Symbol("EOF");
 let currentToken = null;
-let currentAttribute = null;
-let words = /^[a-zA-Z]$/;
-let spaceCharReg = /^[\t\n\f ]$/;
 
 function emit(token) {
     console.log(token);
 }
 
 function data(c) {
-    if (c === '<') {
+    if (c == '<') {
         return tagOpen;
-    }
-    else if (c === EOF) {
-        emit({ type: 'EOF' })
-        return;
-    }
-    else {
-        emit({ type: 'text', content: c });
+    } else if (c == EOF) {
+        emit({
+            type: 'EFO'
+        });
+    } else {
+        emit({
+            type: 'text',
+            content: c
+        });
         return data;
     }
 }
@@ -25,18 +24,19 @@ function data(c) {
 function tagOpen(c) {
     if (c == '/') {
         return endTagOpen;
-    } else if (c.match(words)) {
+    } else if (c.match(/^[a-zA-Z]$/)) {
         currentToken = {
             type: 'tartTag',
             tagName: ''
         }
         return tagName(c)
     } else {
+        return;
     }
 }
 
 function endTagOpen(c) {
-    if (c.match(words)) {
+    if (c.match(/^[a-zA-Z]$/)) {
         currentToken = {
             type: 'endTag',
             tagName: ''
@@ -51,13 +51,12 @@ function endTagOpen(c) {
     }
 }
 
-
 function tagName(c) {
-    if (c.match(spaceCharReg)) {
+    if (c.match(/^[\t\n\f ]$/)) {
         return beforeAttributeName;
     } else if (c == "/") {
         return selfClosingStartTag;
-    } else if (c.match(words)) {
+    } else if (c.match(/^[a-zA-Z]$/)) {
         currentToken.tagName += c;
         return tagName;
     } else if (c == '>') {
@@ -67,8 +66,9 @@ function tagName(c) {
         return tagName;
     }
 }
+
 function beforeAttributeName(c) {
-    if (c.match(spaceCharReg)) {
+    if (c.match(/^[\t\n\f ]$/)) {
         return beforeAttributeName;
     } else if (c == '/' || c == '>' || c == 'EOF') {
         return afterAttributeName(c);
@@ -85,7 +85,7 @@ function beforeAttributeName(c) {
 
 // <div class='name' ></div>
 function attributeName(c) {
-    if (c.match(spaceCharReg) || c == '/' || c == '>' || c == EOF) { // 属性标签后等待标签（空格、/、>），属性标签结束
+    if (c.match(/^[\t\n\f ]$/) || c == '/' || c == '>' || c == EOF) { // 属性标签后等待标签（空格、/、>），属性标签结束
         return afterAttributeName(c);
     } else if (c == '=') {
         return beforeAttributeValue;
@@ -94,13 +94,13 @@ function attributeName(c) {
     } else if (c == "\"" || c == "'" || c == "<") {
 
     } else {
-        currentAttribute.name += c;
+        currentAttribute += c;
         return attributeName;
     }
 }
 
 function beforeAttributeValue(c) {
-    if (c.match(spaceCharReg) || c == '/' || c == '>' || c == EOF) {
+    if (c.match(/^[\t\n\f ]$/) || c == '/' || c == '>' || c == EOF) {
         return beforeAttributeValue;
     } else if (c == "\"") {
         return doubleQuotedAttributeValue;
@@ -122,7 +122,7 @@ function doubleQuotedAttributeValue(c) {
     } else if (c == EOF) {
 
     } else {
-        currentAttribute.value += c;
+        currentAttribute += c;
         return doubleQuotedAttributeValue;
     }
 }
@@ -136,13 +136,13 @@ function singleQuotedAttributeValue(c) {
     } else if (c == EOF) {
 
     } else {
-        currentAttribute.value += c;
+        currentAttribute += c;
         return singleQuotedAttributeValue;
     }
 }
 
 function UnquotedAttributeValue(c) {
-    if (c.match(spaceCharReg)) {
+    if (c.match(/^[\t\n\f ]$/)) {
         currentToken[currentAttribute.name] = currentAttribute.value;
         return beforeAttributeName;
     } else if (c == "/") {
@@ -190,34 +190,32 @@ function afterAttributeName(c) {
 
 
 function afterQuotedAttributeValue(c) {
-    if (c.match(spaceCharReg)) {
-        return beforeAttributeName;
+    if (c.match(/^[\t\n\f ]$/)) {
+        return beforeAttributeValue;
     } else if (c == "/") {
         return selfClosingStartTag;
     } else if (c == ">") {
+        currentToken[currentAttribute.name] = currentAttribute.value;
         emit(currentToken);
         return data;
     } else if (c == EOF) {
 
     } else {
-        return beforeAttributeName(c);
+        currentAttribute += c;
+        return doubleQuotedAttributeValue;
     }
 }
-
-
 
 function selfClosingStartTag(c) {
     if (c == '>') {
         currentToken.isSelfClosing = true;
-        emit(currentToken);
         return data;
     } else if (c == EOF) {
 
     } else {
-        return beforeAttributeName(c);
+
     }
 }
-
 module.exports.parserHTML = function parserHTML(html) {
     let state = data;
     for (let c of html) {
