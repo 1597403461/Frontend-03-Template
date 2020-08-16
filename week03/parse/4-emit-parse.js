@@ -71,6 +71,7 @@ function beforeAttributeName(c) {
     if (c.match(/^[\t\n\f ]$/)) {
         return beforeAttributeName;
     } else if (c == '>') {
+        emit(currentToken);
         return data;
     } else if (c == '=') {
         return beforeAttributeName;
