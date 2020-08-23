@@ -1,10 +1,10 @@
-// 添加specificity 并且修改131-155行
 const CSS = require('css');
 const EOF = Symbol("EOF");
+const layout =require('./layout');
 let currentToken = null;
 let currentAttribute = null;
-let bothStyleReg = /[a-zA-Z]{1}[a-zA-Z0-9]*|\.[a-zA-Z]{1}[a-zA-Z0-9]*|#[a-zA-Z0-9]+/g;
 let words = /^[a-zA-Z]$/;
+let bothStyleReg = /[a-zA-Z]{1}[a-zA-Z0-9]*|\.[a-zA-Z]{1}[a-zA-Z0-9]*|#[a-zA-Z0-9]+/g;
 let spaceCharReg = /^[\t\n\f ]$/;
 let currentTextNode = null;
 
@@ -15,7 +15,7 @@ let cssRules = [];
 // 加入一个新的函数， addCssRules， 这里把CSS规则暂存到一个数组里
 function addCssRules(text) {
     let ast = CSS.parse(text);
-    // console.log(JSON.stringify(ast, null, "    "));
+    console.log(JSON.stringify(ast, null, "    "));
     cssRules.push(...ast.stylesheet.rules);
 }
 
@@ -56,6 +56,18 @@ function specificity(selector) {
     return p;
 }
 
+function compare(sp1, sp2) {
+    if (sp1[0] - sp2[0]) {
+        return sp1[0] - sp2[0];
+    }
+    if (sp1[1] - sp2[1]) {
+        return sp1[1] - sp2[1];
+    }
+    if (sp1[2] - sp2[2]) {
+        return sp1[2] - sp2[2];
+    }
+    return sp1[3] - sp2[3];
+}
 
 // 简单选择器（class选择器、id选择器、tagName选择器）
 function match(element, selector) {
@@ -187,6 +199,7 @@ function emit(token) {
             if (top.tagName === 'style') {
                 addCssRules(top.children[0].content);
             }
+            layout(top);
             stack.pop();
         }
         currentTextNode = null;

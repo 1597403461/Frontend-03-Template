@@ -3,7 +3,7 @@ const EOF = Symbol("EOF");
 let currentToken = null;
 let currentAttribute = null;
 let words = /^[a-zA-Z]$/;
-let bothStyleReg     = /[a-zA-Z]{1}[a-zA-Z0-9]*|\.[a-zA-Z]{1}[a-zA-Z0-9]*|#[a-zA-Z0-9]+/g;
+let bothStyleReg = /[a-zA-Z]{1}[a-zA-Z0-9]*|\.[a-zA-Z]{1}[a-zA-Z0-9]*|#[a-zA-Z0-9]+/g;
 let spaceCharReg = /^[\t\n\f ]$/;
 let currentTextNode = null;
 
