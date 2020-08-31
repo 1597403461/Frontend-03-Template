@@ -28,11 +28,14 @@
 
 [0,0,0,0] --> [inline,id,class,tag]
 
+S = inline *N^3 + id* N^2 + class *N^1 + tag
+
+N必须取足够大来计算S，否则可能会出现相等的情况
+
 1. div div #id [0,1,0,2]
 2. div .ls #id [0,1,1,1]
 
 此时`2`的优先级 > `1`的优先级
-
 
 ## 伪类
 
