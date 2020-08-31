@@ -41,3 +41,9 @@
 2. ::after
 3. ::first-line
 4. ::first-letter
+
+## 为什么 first-letter 可以设置 float 之类的，而 first-line 不行呢
+
+first-letter: 指代第一个字符，有确切的位置及内容
+
+first-line： 指代第一行，第一行所能确定的内容具有不确定性。而且屏幕都可大可小。渲染计算的话，极其复杂。也会影响渲染效率/
