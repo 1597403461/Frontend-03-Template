@@ -4,7 +4,7 @@
 
 1. type
 2. *
-3. #HASH
+3. #id
 4. .class
 5. [attribute] html属性
 6. :before 伪类
