@@ -59,3 +59,22 @@ moveTo(x, y)
 moveBy(x, y)
 resizeTo(x, y)
 resizeBy(x, y)
+
+## scroll
+
+element scroll
+
+1. scrollTop
+2. scrollLeft
+3. scrollWidth   --> 可滚动宽度
+4. scrollHeight  --> 可滚动高度
+5. scrollTo(x,y) --> 滚动到特定位置
+6. scrollBy(x,y) --> 滚动差值
+7. scrollIntoView() --> 滚动到可见区域
+
+window scroll（顶层窗口）
+
+1. scrollX
+2. scrollY
+3. scrollTo(x,y)
+4. scrollBy(x,y)
