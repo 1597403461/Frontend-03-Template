@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .cell {
+            display: inline-block;
+            line-height: 7px;
+            width: 6px;
+            height: 6px;
+            background-color: gray;
+            border-bottom: solid 1px white;
+            border-right: solid 1px white;
+            vertical-align: middle;
+        }
+
+        #container {
+            width: 701px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container"></div>
+    <button onclick="localStorage['map'] = JSON.stringify(map)">
+        save
+    </button>
+</body>
+<script>
+    class Sorted {
+        constructor(data, compare) {
+            this.data = data.slice();
+            this.compare = compare || ((a, b) => a - b)
+        }
+        take() {
+            if (!this.data.length) return;
+            let min = this.data[0];
+            let minIndex = 0;
+
+            for (let i = 0; i < this.data.length; i++) {
+                if (this.compare(this.data[i], min) < 0) {
+                    min = this.data[i];
+                    minIndex = i
+                }
+            }
+
+            this.data[minIndex] = this.data[this.data.length - 1];
+            this.data.pop();
+            return min
+        }
+
+        give(v) {
+            this.data.push(v)
+        }
+    }
+    let map = localStorage['map'] ? JSON.parse(localStorage['map']) : Array(10000).fill(0);
+
+    let container = document.getElementById('container');
+
+    for (let x = 0; x < 100; x++) {
+        for (let y = 0; y < 100; y++) {
+            let cell = document.createElement('div')
+            cell.classList.add('cell')
+            if (map[100 * x + y] == 1) {
+                cell.style.backgroundColor = 'black'
+            }
+
+            cell.addEventListener('mousemove', () => {
+                if (mousedown) {
+                    if (clear) {
+                        cell.style.backgroundColor = '';
+                        map[100 * x + y] = 0;
+                    } else {
+                        cell.style.backgroundColor = 'black';
+                        map[100 * x + y] = 1;
+                    }
+                }
+            })
+
+            container.appendChild(cell)
+        }
+    }
+
+    let mousedown = false;
+    let clear = false;
+    document.addEventListener('mousedown', (e) => {
+        // 左键画图
+        mousedown = true;
+        // 右键清除
+        clear = (e.which === 3)
+    })
+
+    document.addEventListener('mouseup', () => mousedown = false);
+    // 禁止右键菜单弹出
+    // document.addEventListener('contextmenu', (e) => e.preventDefault());
+
+
+    function sleep(t) {
+        return new Promise((resolve, reject) => {
+            setTimeout(resolve, t);
+        });
+    }
+
+
+    async function findPath(map, start, end) {
+        let table = Object.create(map);
+
+        // 初始化队列
+        var queue = [start];
+        // 找每个点周围的所有的接触的点并绘制
+        async function insert(x, y, pre) {
+            // 遇到边界停止
+            if (x < 0 || x >= 100 || y < 0 || y >= 100) return;
+            // 遇到非 0 即停止（0 指代未绘制过）
+            if (table[x * 100 + y]) return;
+            // 每找到一个点将其绘制成亮绿色
+            container.children[y * 100 + x].style.backgroundColor = 'lightgreen';
+            // 绘制完成后将此点标记（将其来源位置作为标记记录）
+            table[x * 100 + y] = pre;
+            // 绘制的每个点都加入队列
+            queue.push([x, y]);
+        }
+        // 循环队列，直到队列为空
+        while (queue.length) {
+            // 取出队列首位坐标，并将在队列中去除此坐标（先进先出）
+            let [x, y] = queue.shift();
+            // 找到终点
+            if (x == end[0] && y == end[1]) {
+                // 存储路径坐标
+                let path = [];
+                // 绘制终点
+                container.children[y * 100 + x].style.backgroundColor = 'purple';
+                // 根据 table 循环遍历寻找起点
+                while (x != start[0] || y != start[1]) {
+                    path.push(table[x * 100 + y]);
+                    // 取出当前坐标记录的值（其上一个节点的坐标）,并赋值给
+                    [x, y] = table[x * 100 + y];
+                    await sleep(30);
+                    container.children[y * 100 + x].style.backgroundColor = 'purple';
+                }
+                return path
+            }
+            // 每次都找此坐标位置的所有周围坐标节点（8个）
+            await insert(x - 1, y, [x, y])
+            await insert(x, y - 1, [x, y])
+            await insert(x + 1, y, [x, y])
+            await insert(x, y + 1, [x, y])
+
+            await insert(x - 1, y - 1, [x, y])
+            await insert(x + 1, y - 1, [x, y])
+            await insert(x - 1, y + 1, [x, y])
+            await insert(x + 1, y + 1, [x, y])
+        }
+        return null
+    }
+</script>
+
+</html>

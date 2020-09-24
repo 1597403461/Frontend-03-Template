@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .cell {
+            display: inline-block;
+            line-height: 7px;
+            width: 6px;
+            height: 6px;
+            background-color: gray;
+            border-bottom: solid 1px white;
+            border-right: solid 1px white;
+            vertical-align: middle;
+        }
+
+        #container {
+            width: 701px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container"></div>
+    <button onclick="localStorage['map'] = JSON.stringify(map)">
+        save
+    </button>
+</body>
+<script>
+    let map = localStorage['map'] ? JSON.parse(localStorage['map']) : Array(10000).fill(0);
+
+    let container = document.getElementById('container');
+
+    for (let y = 0; y < 100; y++) {
+        for (let x = 0; x < 100; x++) {
+            let cell = document.createElement('div')
+            cell.classList.add('cell')
+            if (map[100 * y + x] == 1) {
+                cell.style.backgroundColor = 'black'
+            }
+
+            cell.addEventListener('mousemove', () => {
+                if (mousedown) {
+                    if (clear) {
+                        cell.style.backgroundColor = '';
+                        map[100 * y + x] = 0;
+                    } else {
+                        cell.style.backgroundColor = 'black';
+                        map[100 * y + x] = 1;
+                    }
+                }
+            })
+
+            container.appendChild(cell)
+        }
+    }
+
+    let mousedown = false;
+    let clear = false;
+    document.addEventListener('mousedown', (e) => {
+        // 左键画图
+        mousedown = true;
+        // 右键清除
+        clear = (e.which === 3)
+    })
+
+    document.addEventListener('mouseup', () => mousedown = false);
+    // 禁止右键菜单弹出
+    // document.addEventListener('contextmenu', (e) => e.preventDefault());
+
+
+    function path(map, start, end) {
+        // 所有搜索算法的灵魂，先进先出的数据结构
+        var queue = [start];
+        function insert(x, y) {
+            // 遇到边界停止
+            if (x < 0 || x >= 100 || y < 0 || y >= 100) return;
+            // 遇到非 0 即停止（0 指代未绘制过）
+            if (map[y * 100 + x]) return;
+            // 绘制完成后将此点标记
+            map[y * 100 + x] = 2;
+            // 绘制的每个点都加入队列
+            queue.push([x, y]);
+        }
+        // 循环队列，直到队列为空
+        while (queue.length) {
+            let [x, y] = queue.shift();
+            console.log(x, y);
+            // 找到终点，结束
+            if (x == end[0] && y == end[1]) {
+                return true;
+            }
+            // 每次都找此坐标位置的所有周围坐标节点
+            insert(x - 1, y)
+            insert(x, y - 1)
+            insert(x + 1, y)
+            insert(x, y + 1)
+        }
+        return false
+    }
+</script>
+
+</html>
