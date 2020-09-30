@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    #container {
+        width: 100%;
+        height: 200px;
+        line-height: 200px;
+        text-align: center;
+        color: #fff;
+        background-color: #444;
+        font-size: 30px;
+    }
+</style>
+
+<body>
+    <div id="container"></div>
+    <script>
+        // 防抖就是限制事件的频繁触发
+        var count = 1;
+        var container = document.getElementById('container');
+
+        function getUserAction(e) {
+            console.log(e);
+            container.innerHTML = count++;
+        };
+
+        container.onmousemove = debounce(getUserAction, 1000, true);
+
+        // 简单的防抖函数
+        function debounce(func, wait, immediate) {
+            var timer;
+            return function () {
+                if(immediate) {
+                    !timer && func.apply(this, arguments)
+                }
+                timer && clearTimeout(timer);
+                timer = setTimeout(func.bind(this, ...arguments), wait)
+            }
+        }
+    </script>
+</body>
+
+</html>

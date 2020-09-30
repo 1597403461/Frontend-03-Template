@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    #container {
+        width: 100%;
+        height: 200px;
+        line-height: 200px;
+        text-align: center;
+        color: #fff;
+        background-color: #444;
+        font-size: 30px;
+    }
+</style>
+
+<body>
+    <div id="container"></div>
+    <script>
+        // 节流是在同一时间内只触发一次
+        var count = 1;
+        var container = document.getElementById('container');
+
+        function getUserAction(e) {
+            console.log(e);
+            container.innerHTML = count++;
+        };
+
+        container.onmousemove = throttle2(getUserAction, 1000, {leading: false});
+
+        // 简单的节流函数
+        function throttle(func, wait) {
+            var timeout;
+
+            return function () {
+                if (timeout) return;
+                timeout = setTimeout(() => {
+                    timeout = null;
+                    func.apply(this, arguments)
+                }, wait)
+            }
+        }
+
+        // 带参数
+        options = {
+            leading: true, // 首次立即出发
+        }
+
+        function throttle2(func, wait, options) {
+            var status, timeout;
+
+            return function () {
+                if(options instanceof Object) {
+                    const {leading} = options;
+                    !status && leading && func.apply(this, arguments);
+                    status = true;
+                }
+                if (timeout) return;
+                timeout = setTimeout(() => {
+                    timeout = null;
+                    func.apply(this, arguments);
+                }, wait)
+            }
+        }
+
+    </script>
+</body>
+
+</html>

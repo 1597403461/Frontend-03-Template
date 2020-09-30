@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        // es3
+        Function.prototype.call2 = function (context) {
+            // 第一个参数为 null 时， 默认指向 window
+            var context = context || window;
+            // this 指向为调用者即函数本身
+            context.fn = this;
+            var args = [];
+            for (var i = 1, len = arguments.length; i < len; i++) {
+                args.push('arguments[' + i + ']');
+            }
+            return eval('context.fn(' + args + ')');
+            delete context.fn;
+        }
+
+        // es6
+        Function.prototype.call3 = function (context) {
+            // 第一个参数为 null 时， 默认指向 window
+            var context = context || window;
+            context.fn = this;
+            var args = [];
+            for (var i = 1, len = arguments.length; i < len; i++) {
+                args.push(arguments[i]);
+            }
+            return context.fn(...args)
+            delete context.fn;
+        }
+
+        var value = 3;
+
+        // 测试一下
+        var foo = {
+            value: 1
+        };
+
+        function bar(name, age) {
+            console.log(name)
+            console.log(age)
+            console.log(this.value);
+        }
+
+        bar.call3(foo, 'kevin', 18);
+        // kevin
+        // 18
+        // 1
+
+        bar.call3(null, 'kevin', 18);
+    </script>
+</body>
+
+</html>

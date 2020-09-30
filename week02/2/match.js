@@ -52,7 +52,7 @@ function foundE(i) {
     if (i == 'f') {
         return end;
     } else {
-        return start(c);
+        return start('i');
     }
 }
 console.log(match('asdadjaskabcdefasdas'))
