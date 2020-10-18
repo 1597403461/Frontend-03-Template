@@ -1,0 +1,58 @@
+<script>
+    // 监听指定变量的改变
+    let object = {
+        a: 1,
+        b: 2
+    }
+
+    let useReactivties = [];
+
+    let callbacks = new Map();
+
+    let po = reactive(object);
+
+    // 事件监听
+    effect(() => {
+        console.log(po.a)
+    })
+
+    function effect(callback) {
+        useReactivties = [];
+        // 执行 callback 查看事件监听是否是 reactive 实例化的变量
+        // 若是的话， 会执行 Proxy get() 函数
+        callback();
+        console.log(useReactivties);
+
+        // useReactivties 可能发生多次注册，所以循环遍历
+        for (let reactivity of useReactivties) {
+            const [obj, prop]= reactivity;
+            if (callbacks.has(obj)) return;
+            callbacks.set(obj, new Map());
+            if (callbacks.get(obj).has(prop)) return;
+            callbacks.get(obj).set(prop, []);
+            callbacks.get(obj).get(prop).push(callback)
+        }
+    }
+
+    function reactive(objext) {
+        return new Proxy(object, {
+            set(obj, prop, value) {
+                // 设置值
+                obj[prop] = value;
+                // 寻找对应 prop 的 callback
+                const propCallbacks = callbacks.get(obj) && callbacks.get(obj).get(prop);
+                if(!propCallbacks.length) return;
+                for (let callback of propCallbacks) {
+                    callback()
+                }
+
+                return obj[prop];
+            },
+            get(obj, prop) {
+                // 将发生监听的值进行存储
+                useReactivties.push([obj, prop]);
+                return obj[prop];
+            }
+        })
+    }
+</script>
