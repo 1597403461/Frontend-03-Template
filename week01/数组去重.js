@@ -6,7 +6,7 @@ function unique(array) {
     // res用来存储结果
     var res = [];
     for (var i = 0, arrayLen = array.length; i < arrayLen; i++) {
-        for (var j = 0, resLen = res.length; j < resLen; j++ ) {
+        for (var j = 0, resLen = res.length; j < resLen; j++) {
             if (array[i] === res[j]) {
                 break;
             }
@@ -43,7 +43,7 @@ console.log(unique(array));
 var array = [1, 2, 1, 1, '1'];
 
 function unique(array) {
-    var res = array.filter(function(item, index, array){
+    var res = array.filter(function (item, index, array) {
         return array.indexOf(item) === index;
     })
     return res;
@@ -53,18 +53,14 @@ console.log(unique(array));
 
 //  Object 键值对
 
-var array = [{value: 1}, {value: 1}, {value: 2}];
+var array = [{ value: 1 }, { value: 1 }, { value: 2 }];
 
 function unique(array) {
     var obj = {};
-    return array.filter(function(item, index, array){
+    return array.filter(function (item, index, array) {
         console.log(typeof item + JSON.stringify(item))
         return obj.hasOwnProperty(typeof item + JSON.stringify(item)) ? false : (obj[typeof item + JSON.stringify(item)] = true)
     })
 }
 
 console.log(unique(array)); // [{value: 1}, {value: 2}]
-
-// ES6
-
-Set

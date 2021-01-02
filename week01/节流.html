@@ -30,7 +30,7 @@
             container.innerHTML = count++;
         };
 
-        container.onmousemove = throttle2(getUserAction, 1000, {leading: false});
+        container.onmousemove = throttle2(getUserAction, 1000, { leading: false });
 
         // 简单的节流函数
         function throttle(func, wait) {
@@ -54,8 +54,8 @@
             var status, timeout;
 
             return function () {
-                if(options instanceof Object) {
-                    const {leading} = options;
+                if (options instanceof Object) {
+                    const { leading } = options;
                     !status && leading && func.apply(this, arguments);
                     status = true;
                 }

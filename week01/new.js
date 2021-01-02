@@ -1,4 +1,4 @@
-function Otaku (name, age) {
+function Otaku(name, age) {
     this.name = name;
     this.age = age;
 
@@ -21,7 +21,7 @@ Otaku.prototype.sayYourName = function () {
  */
 function objectFactory() {
     var obj = new Object(),
-    Constructor = [].shift.call(arguments);
+        Constructor = [].shift.call(arguments);
     obj.__proto__ = Constructor.prototype;
     var ret = Constructor.apply(obj, arguments);
     return typeof ret === 'object' ? ret : obj;
@@ -33,3 +33,15 @@ console.log(person.name) // Kevin
 console.log(person.habit) // Games
 console.log(person.strength) // 60
 person.sayYourName(); // I am Kevin
+
+
+var fibonacci = function (n) {
+    return n < 2 ? n : fibonacci(n - 1) + fibonacci(n - 2);
+};
+
+console.log(fibonacci(10))
+
+function new2(func) {
+    var obj = new Object();
+
+}

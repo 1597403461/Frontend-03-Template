@@ -1,0 +1,109 @@
+<script>
+    // 原型链继承   缺点： 无法对父函数进行传参数
+    function Person(name) {
+        this.name = name;
+    }
+
+    Person.prototype.say = function () {
+        console.log(this.name, this.age)
+    }
+
+    function Son() {
+        this.age = 10;
+    }
+
+    Son.prototype = new Person();
+
+    let son = new Son();
+
+    console.log(son)
+
+    // 构造函数继承 缺点： 无法继承父函数原型上的属性
+
+    function Person2(name) {
+        this.name = name;
+    }
+
+    Person2.prototype.say = function () {
+        console.log(this.name, this.age)
+    }
+
+    function Son2(name) {
+        Person2.call(this,name);
+        this.age = 10;
+    }
+
+    let son2 = new Son2('lily');
+
+    console.log(son2);
+
+    // 组合继承（构造函数原型链继承） 缺点：父函数实例化两次,且子类的 constructor 指向父类的 constructor
+
+    function Person3(name) {
+        this.name = name;
+    }
+
+    Person3.prototype.say = function () {
+        console.log(this.name, this.age)
+    }
+
+    function Son3(name) {
+        Person3.call(this,name);
+        this.age = 10;
+    }
+
+    // 直接继承父类的实例，导致自己没有 constructor
+    Son3.prototype = new Person3();
+
+    let son3 = new Son3('lily');
+
+    console.log();
+
+    // 组合继承优化1
+
+    // 组合继承（构造函数原型链继承） 缺点：原型对象指向相同，导致子类的 constructor 仍然指向父类的 constructor
+
+    function Person4(name) {
+        this.name = name;
+    }
+
+    Person4.prototype.say = function () {
+        console.log(this.name, this.age)
+    }
+
+    function Son4(name) {
+        Person4.call(this,name);
+        this.age = 10;
+    }
+
+    // 原型对象指向相同，导致子类的 constructor 仍然指向父类的 constructor
+    Son4.prototype = Person4.prototype;
+
+    let son4 = new Son4('lily');
+
+    console.log(son4);
+
+     // 组合继承优化2
+
+    // 寄生组合继承
+
+    function Person5(name) {
+        this.name = name;
+    }
+
+    Person5.prototype.say = function () {
+        console.log(this.name, this.age)
+    }
+
+    function Son5(name) {
+        Person4.call(this,name);
+        this.age = 10;
+    }
+
+    // 原型对象指向相同，导致子类的 constructor 仍然指向父类的 constructor
+    Son5.prototype = Object.create(Person5.prototype);
+
+    let son5 = new Son5('lily');
+
+    console.log(son5);
+</script>

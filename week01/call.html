@@ -36,6 +36,14 @@
             delete context.fn;
         }
 
+        Function.prototype.apply2 = function (context) {
+            var context = context || window;
+            context.fn = this;
+            const arr =arguments[1];
+            return context.fn(...arr);
+            delete context.fn;
+        }
+
         var value = 3;
 
         // 测试一下
@@ -55,6 +63,8 @@
         // 1
 
         bar.call3(null, 'kevin', 18);
+
+        bar.apply2(foo, ['kevin', 18]);
     </script>
 </body>
 
