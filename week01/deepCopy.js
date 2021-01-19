@@ -1,4 +1,4 @@
-var deepCopy = function(obj) {
+var deepCopy = function (obj) {
     if (typeof obj !== 'object') return;
     var newObj = obj instanceof Array ? [] : {};
     for (var key in obj) {
@@ -8,6 +8,4 @@ var deepCopy = function(obj) {
     }
     return newObj;
 }
-
-
-console.log(deepCopy([1,2,3]))
+console.log(deepCopy({ a: 1, b: { c: 2 } }))

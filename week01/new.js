@@ -40,8 +40,3 @@ var fibonacci = function (n) {
 };
 
 console.log(fibonacci(10))
-
-function new2(func) {
-    var obj = new Object();
-
-}
