@@ -1,17 +1,21 @@
 // useState
 (function () {
-    let state = [];
-    let lastIndex = 0;
+    let hooksState = [];
+    let hooksIndex = 0;
     function useState(initialState) {
-        state[lastIndex] = state[lastIndex] || initialState;
-
+        hooksState[hooksIndex] = hooksState[hooksIndex] || initialState;
+        let currentIndex = hooksIndex;
         function setState(newState) {
-            state[lastIndex] = newState;
+            hooksState[currentIndex] = newState;
+            hooksIndex = 0;
+            render();
         }
-        return [state[lastIndex++], setState]
+        return [hooksState[hooksIndex++], setState]
     }
     return useState;
 })()
+
+
 
 // useCallback
 (function () {

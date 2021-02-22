@@ -31,4 +31,13 @@ function diff2(vdom, rdom) {
 console.log(diff(vdom, rdom));
 console.log(diff2(vdom, rdom));
 
+var A = function(){}
+A.prototype = {}
+var a = new A()
+A.prototype = {}
+var b = new A()
+console.dir(a)
+console.log(a instanceof A)
+console.log(b instanceof A)
+
 
